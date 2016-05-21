@@ -1,0 +1,101 @@
+/* Do not remove the comments below. It's the markers used by wiredep to inject
+   less dependencies when defined in the bower.json of your dependencies */
+// bower:less
+// endbower
+
+@fa-font-path:                                              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/fonts/";
+@system-font-family:                                        'Open Sans', helvetica, sans-serif;
+@system-title-font-family:                                  'Montserrat', serif;
+@system-body-background:                                    #eee;
+@tag-small-height:                                          20px;
+@button-font-family:                                        @system-title-font-family;
+
+@font-color:                                                #666;
+
+body{
+  padding: 1rem 2rem;
+
+  @ranking-size: 25px;
+  .ranking{
+    .circle(@ranking-size);
+    background: #77CC68;
+    border-radius: @ranking-size;
+    color: white;
+    display: inline-block;
+    font-size: 0.8rem;
+    line-height: @ranking-size;
+    text-align: center;
+  }
+
+  h1, h2{
+    color: @font-color;
+  }
+
+  p{
+    font-size: 1rem;
+    color: @font-color;
+  }
+
+  .ongoing-events-title{
+    margin-top: 2rem;
+  }
+
+  table.data-table{
+    font-size: 0.95rem;
+
+    &.players{
+      td{
+        &:nth-child(2){
+          font-size: 1.1rem;
+        }
+
+        &:nth-child(1){
+          font-family: @system-title-font-family;
+          color: @system-primary-color;
+        }
+
+        &:nth-child(3){
+          font-family: @system-title-font-family;
+          color: @system-primary-color;
+        }
+      }
+
+      td, th{
+        text-align: center;
+
+        &:nth-child(1){
+          width: 50px;
+        }
+
+        &:nth-child(2){
+          text-align: left;
+        }
+
+        &:last-child{
+          width: 75px;
+        }
+      }
+    }
+
+    &.games{
+
+    }
+  }
+
+  .start-league-section{
+    text-align: center;
+    margin: 2rem 0;
+  }
+
+  .button:not(.only-icon){
+    [class^="@{fa-css-prefix}-"],
+    [class*=" @{fa-css-prefix}-"] {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+/* Do not remove the comments below. It's the markers used by gulp-inject to inject
+   all your less files automatically */
+// injector
+// endinjector

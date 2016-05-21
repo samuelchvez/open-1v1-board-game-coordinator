@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Socket IO</title>
+  </head>
+  <body>
+    <script src="http://localhost:3001/../bower_components/socket.io-client/socket.io.js"></script>
+
+    <script>
+
+      function randint(a, b){
+        return parseInt(Math.floor(Math.random() * (b - a) + b));
+      }
+
+      var socket = io.connect('http://localhost:3000'),
+          clientId = randint(0, 100),
+          player_id;
+      socket.on('connect',function(){
+        console.log("Conectado.");
+        socket.emit('signin', {name:'Ghof_' + clientId, game: 'othello'});
+      });
+
+      socket.on('ready', function(data){
+        console.log("Ready");
+        player_id = data.player_id;
+        socket.emit('play', {
+          game_id: data.game_id,
+          player_id: data.player_id,
+          position: 20
+        });
+      });
+
+      socket.on('finish', function(data){
+        console.log("Finish");
+        console.log(data);
+
+        if(data.rematch){
+          console.log("Ready to play again!");
+
+          socket.emit('rematch_ready', {
+            game_id: data.game_id,
+            player_id: player_id
+          });
+        }
+      });
+
+    </script>
+  </body>
+</html>

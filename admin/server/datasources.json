@@ -1,0 +1,11 @@
+{
+  "mongo_dev": {
+    "name": "mongo_dev",
+    "connector": "mongodb",
+    "host": "127.0.0.1",
+    "database": "league_test",
+    "username": "",
+    "password": "",
+    "port": 27017
+  }
+}

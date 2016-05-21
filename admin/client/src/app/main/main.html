@@ -1,0 +1,124 @@
+<div class="grid">
+  <div class="row">
+    <div class="col">
+      <h1>Othello League</h1>
+      <p>Welcome to the <strong>Othello League's Dashboard</strong>. Here you can watch and control what is going on with the league. For example, the following table shows the AI players that are currently online.</p>
+
+      <table class="players data-table">
+        <tr>
+          <th>Ranking</th>
+          <th>Nombre</th>
+          <th>Ganados</th>
+          <th>Perdidos</th>
+          <th>Empatados</th>
+          <th>Disponible</th>
+        </tr>
+        <tr ng-repeat="player in ctrl.players">
+          <td>
+            <span class="ranking">{{ player.ranking }}</span>
+          </td>
+          <td>{{ player.name }}</td>
+          <td>{{ player.wins }}</td>
+          <td>{{ player.loses }}</td>
+          <td>{{ player.draws }}</td>
+          <td ng-switch="ctrl.getStatus(player)">
+
+            <span ng-switch-when="available">
+              <a
+                we-button
+                color="success"
+                icon="check"
+                size="tiny"
+                ng-click="ctrl.waitingPlayer = player;"></a>
+            </span>
+
+            <span ng-switch-when="getme">
+              <a
+                we-button
+                color="info"
+                icon="check"
+                size="tiny"
+                ng-click="ctrl.setForMatch(player);"></a>
+            </span>
+
+            <span ng-switch-when="playing">
+              <a
+                we-button
+                color="danger"
+                icon="times"
+                size="tiny"></a>
+            </span>
+
+            <span ng-switch-when="waiting">
+              <a
+                we-button
+                color="warning"
+                icon="refresh"
+                size="tiny"
+                ng-click="ctrl.clearWaiting();"></a>
+            </span>
+
+          </td>
+        </tr>
+      </table>
+
+      <div class="start-league-section">
+        <a
+          we-button
+          icon="star"
+          color="warning"
+          class="block"
+          ng-click="ctrl.startLeague()">
+          Start League
+        </a>
+      </div>
+
+      <h2 class="ongoing-events-title">Recent games</h2>
+      <p>A continuación verás una tabla con todos los partidos que están ocurriendo en este momento. Los partidos más viejos están en la posición más baja, luego de unos minutos desaparecerán.</p>
+      
+      <table class="games data-table">
+        <tr>
+          <th>Game ID</th>
+          <th>Time</th>
+          <th>Players</th>
+          <th>Winner</th>
+        </tr>
+
+        <tr ng-repeat="game in ctrl.games | orderBy: '-date_time' ">
+          <td>{{ game.game_id }}</td>
+          <td am-time-ago="game.date_time"></td>
+          <td>
+            <span class="tag tag-info tag-small">{{ game.player_1.name }}</span> vs
+            <span class="tag tag-warning tag-small">{{ game.player_2.name }}</span>
+          </td>
+          <td>
+
+            <span
+              ng-if="game.status === 'finished'">
+
+              <span
+                class="tag tag-small tag-info"
+                ng-if="game.winner === game.player_1.name">
+                {{ game.player_1.name }}
+              </span>
+
+              <span
+                class="tag tag-small tag-info"
+                ng-if="game.winner === game.player_2.name">
+                {{ game.player_2.name }}
+              </span>
+
+              <span
+                class="tag tag-small tag-gray"
+                ng-if="game.winner !== game.player_1.name && game.winner !== game.player_2.name">draw</span>
+            </span>
+
+            <span
+              class="tag tag-small tag-danger"
+              ng-if="game.status !== 'finished'">ongoing</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
