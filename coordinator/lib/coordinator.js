@@ -142,13 +142,26 @@ function nextGameDaemonProcedure(socket, tournament){
       // Register new game
       tournament.ongoingGames[nextGame.id] = nextGame;
 
-      // Notify player 1
-      nextGame.player_1.socket.emit('ready', {
-        game_id: nextGame.id,
-        player_id: gameConstants.PLAYER_1_TURN_ID,
-        board: nextGame.board,
-        movementNumber: nextGame.movementNumber
-      });
+      if (nextGame.currentTurn === gameConstants.PLAYER_1_TURN_ID){
+
+        // Notify player 1
+        nextGame.player_1.socket.emit('ready', {
+          game_id: nextGame.id,
+          turn_id: gameConstants.PLAYER_1_TURN_ID,
+          board: nextGame.board,
+          movementNumber: nextGame.movementNumber
+        });
+      }
+      else{
+
+        // Notify player 2
+        nextGame.player_2.socket.emit('ready', {
+          game_id: nextGame.id,
+          turn_id: gameConstants.PLAYER_2_TURN_ID,
+          board: nextGame.board,
+          movementNumber: nextGame.movementNumber
+        });
+      }
 
       // Log that match started
       console.log(

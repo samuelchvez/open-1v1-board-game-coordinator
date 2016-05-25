@@ -27,7 +27,7 @@ Othello.prototype.play = function(game, player, movement, nextCb, finishCb, erro
 
   // ---------------------------------------------------------------------------
 
-  if(game.movementNumber > 59){
+  if(game.movementNumber > 58){
 
     var choca = parseInt(Math.floor(Math.random() * 2));
 

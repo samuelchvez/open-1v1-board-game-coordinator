@@ -27,7 +27,7 @@
         socket.emit('signin', {
           user_name: userName,
           tournament_id: tournamentID,
-          user_role: 'player'
+          user_role: 'player' // TODO: Remember to notify my students of change
         });
       });
 
@@ -37,7 +37,7 @@
         console.log("About to move");
 
         socket.emit('play', {
-          turn_id: data.turn_id,
+          turn_id: data.turn_id, // TODO: remember to notify my students of charge
           tournament_id: tournamentID, // TODO: Remember to notify my students of change
           game_id: data.game_id,
           movement: 20  // TODO: position --> movement, remember to notify my students of change
