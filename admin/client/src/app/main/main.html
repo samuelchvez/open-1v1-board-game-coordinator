@@ -1,10 +1,15 @@
 <div class="grid">
   <div class="row">
     <div class="col">
-      <h1>Othello League</h1>
+      <h1>
+        Othello League
+        <span class="tag tag-success tag-small" ng-if="ctrl.games.length > 0">Already started</span>
+      </h1>
       <p>Welcome to the <strong>Othello League's Dashboard</strong>. Here you can watch and control what is going on with the league. For example, the following table shows the AI players that are currently online.</p>
 
-      <table class="players data-table">
+      <p class="placeholder" ng-show="ctrl.players.length === 0">Waiting players to connect...</p>
+
+      <table class="players data-table" ng-show="ctrl.players.length > 0">
         <tr>
           <th>Ranking</th>
           <th>Nombre</th>
@@ -65,15 +70,18 @@
           icon="star"
           color="warning"
           class="block"
-          ng-click="ctrl.startTournament()">
+          ng-click="ctrl.startTournament()"
+          ng-show="ctrl.players.length > 0 && ctrl.games.length == 0">
           Start League
         </a>
       </div>
 
-      <h2 class="ongoing-events-title">Recent games</h2>
+      <h2 class="ongoing-events-title">Recent games ({{ ctrl.games.length }})</h2>
       <p>A continuación verás una tabla con todos los partidos que están ocurriendo en este momento. Los partidos más viejos están en la posición más baja, luego de unos minutos desaparecerán.</p>
-      
-      <table class="games data-table">
+
+      <p class="placeholder" ng-show="ctrl.games.length === 0">Waiting the league to start...</p>
+
+      <table class="games data-table" ng-show="ctrl.games.length > 0">
         <tr>
           <th>No.</th>
           <th>Game ID</th>
