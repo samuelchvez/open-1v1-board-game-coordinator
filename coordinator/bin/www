@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+var express = require('express'),
+    app = require('../app'),
+    sockets = require('../sockets'),
+    coordinator = require('../lib/coordinator');
+
+// Server port
+app.set('port', process.env.PORT || 3000);
+
+// Socket io
+var http = require('http').Server(app);
+
+// Create server
+http.listen(app.get('port'), function(){
+
+  // Report server creation
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
+// Starts socket
+sockets.init(http, function(socket) {
+
+  // Apply game coordination sockets
+  coordinator.attatchEvents(socket);
+
+});

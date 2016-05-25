@@ -9,40 +9,57 @@
 
     <script>
 
-      function randint(a, b){
+      function randInt(a, b){
         return parseInt(Math.floor(Math.random() * (b - a) + b));
       }
 
       var socket = io.connect('http://localhost:3000'),
-          clientId = randint(0, 100),
-          player_id;
+          userName = 'Ghof_' + randInt(0, 10000),
+          turn_id,
+          tournamentID = 142857;
+
       socket.on('connect',function(){
-        console.log("Conectado.");
-        socket.emit('signin', {name:'Ghof_' + clientId, game: 'othello'});
+
+        // Client has connected
+        console.log("Conectado: " + userName);
+
+        // Signing signal
+        socket.emit('signin', {
+          user_name: userName,
+          tournament_id: tournamentID,
+          user_role: 'player'
+        });
       });
 
       socket.on('ready', function(data){
-        console.log("Ready");
-        player_id = data.player_id;
+
+        // Client is about to move
+        console.log("About to move");
+
         socket.emit('play', {
+          turn_id: data.turn_id,
+          tournament_id: tournamentID, // TODO: Remember to notify my students of change
           game_id: data.game_id,
-          player_id: data.player_id,
-          position: 20
+          movement: 20  // TODO: position --> movement, remember to notify my students of change
         });
       });
 
       socket.on('finish', function(data){
-        console.log("Finish");
-        console.log(data);
 
-        if(data.rematch){
-          console.log("Ready to play again!");
+        // The game has finished
+        console.log("Game " + data.game_id + " has finished");
 
-          socket.emit('rematch_ready', {
-            game_id: data.game_id,
-            player_id: player_id
-          });
-        }
+        // Inform my students that there is no rematch attribute
+        console.log("Ready to play again!");
+
+        // Start again!
+
+        socket.emit('player_ready', { // TODO: remember to notify my students
+          tournament_id: tournamentID, // TODO: Remember to notify my students of change
+          game_id: data.game_id,
+          turn_id: data.turn_id // TODO: player_id --> turn_id, remember to notify my students of change
+        });
+
       });
 
     </script>

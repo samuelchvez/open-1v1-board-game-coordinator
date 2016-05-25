@@ -9,21 +9,29 @@
 
   /** @ngInject */
   function mainController($log, mainSocket) {
-    var vm = this;
+    var vm = this,
+        tournamentID = 142857;
 
-    vm.waitingPlayer = false;
+    // When the user is connected
+    mainSocket.on('connect', function(){
+      console.log("Conectado.");
 
-    // When the connection succeeded
-    mainSocket.on('connectionSucceed', function(data){
-      playerListChanged(data.players);
-      gameListChanged(data.games);
+      mainSocket.emit('signin', {
+        name:'TournamentAdministrator',
+        tournament_id: tournamentID,
+        user_role: 'admin'
+      });
+
     });
 
     // When the player list changed
-    mainSocket.on('playerListChanged', playerListChanged);
+    mainSocket.on('player_list_changed', playerListChanged);
 
     // When the game list changed
-    mainSocket.on('gameListChanged', gameListChanged);
+    mainSocket.on('game_list_changed', gameListChanged);
+
+    // When the tournament has ended
+    mainSocket.on('league_finished', leagueFinished);
 
     function playerListChanged(data){
       vm.players = data;
@@ -33,6 +41,9 @@
     function gameListChanged(data){
       vm.games = data;
     }
+
+    // TODO: implement this
+    function leagueFinished(){}
 
     vm.getStatus = function(player){
       if(player.available){
@@ -48,20 +59,8 @@
       return 'playing';
     }
 
-    vm.clearWaiting = function(){
-      vm.waitingPlayer = false;
-    }
-
-    vm.waitForMatch = function(player){
-      vm.waitingPlayer = player;
-    }
-
-    vm.setForMatch = function(player){
-      mainSocket.emit('startSeries', [vm.waitingPlayer, player]);
-    }
-
-    vm.startLeague = function(){
-      mainSocket.emit('startLeague');
+    vm.startTournament = function(){
+      mainSocket.emit('start_tournament', 142857);
     }
   }
 })(angular);

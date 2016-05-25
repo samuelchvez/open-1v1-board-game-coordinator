@@ -17,7 +17,7 @@
           <td>
             <span class="ranking">{{ player.ranking }}</span>
           </td>
-          <td>{{ player.name }}</td>
+          <td>{{ player.user_name }}</td>
           <td>{{ player.wins }}</td>
           <td>{{ player.loses }}</td>
           <td>{{ player.draws }}</td>
@@ -28,8 +28,7 @@
                 we-button
                 color="success"
                 icon="check"
-                size="tiny"
-                ng-click="ctrl.waitingPlayer = player;"></a>
+                size="tiny"></a>
             </span>
 
             <span ng-switch-when="getme">
@@ -37,8 +36,7 @@
                 we-button
                 color="info"
                 icon="check"
-                size="tiny"
-                ng-click="ctrl.setForMatch(player);"></a>
+                size="tiny"></a>
             </span>
 
             <span ng-switch-when="playing">
@@ -54,8 +52,7 @@
                 we-button
                 color="warning"
                 icon="refresh"
-                size="tiny"
-                ng-click="ctrl.clearWaiting();"></a>
+                size="tiny"></a>
             </span>
 
           </td>
@@ -68,7 +65,7 @@
           icon="star"
           color="warning"
           class="block"
-          ng-click="ctrl.startLeague()">
+          ng-click="ctrl.startTournament()">
           Start League
         </a>
       </div>
@@ -78,6 +75,7 @@
       
       <table class="games data-table">
         <tr>
+          <th>No.</th>
           <th>Game ID</th>
           <th>Time</th>
           <th>Players</th>
@@ -85,11 +83,12 @@
         </tr>
 
         <tr ng-repeat="game in ctrl.games | orderBy: '-date_time' ">
-          <td>{{ game.game_id }}</td>
+          <td>{{ $index }}</td>
+          <td>{{ game.id }}</td>
           <td am-time-ago="game.date_time"></td>
           <td>
-            <span class="tag tag-info tag-small">{{ game.player_1.name }}</span> vs
-            <span class="tag tag-warning tag-small">{{ game.player_2.name }}</span>
+            <span class="tag tag-info tag-small">{{ game.player_1.user_name }}</span> vs
+            <span class="tag tag-warning tag-small">{{ game.player_2.user_name }}</span>
           </td>
           <td>
 
@@ -98,19 +97,19 @@
 
               <span
                 class="tag tag-small tag-info"
-                ng-if="game.winner === game.player_1.name">
-                {{ game.player_1.name }}
+                ng-if="game.winner.id === game.player_1.id">
+                {{ game.player_1.user_name }}
               </span>
 
               <span
-                class="tag tag-small tag-info"
-                ng-if="game.winner === game.player_2.name">
-                {{ game.player_2.name }}
+                class="tag tag-small tag-warning"
+                ng-if="game.winner.id === game.player_2.id">
+                {{ game.player_2.user_name }}
               </span>
 
               <span
                 class="tag tag-small tag-gray"
-                ng-if="game.winner !== game.player_1.name && game.winner !== game.player_2.name">draw</span>
+                ng-if="game.winner.id !== game.player_1.id && game.winner.id !== game.player_2.id">draw</span>
             </span>
 
             <span
