@@ -18,7 +18,7 @@ var gameConstants = require('./games/constants'),
 var tournaments = {
       '142857': new League(
         '142857',
-        4,
+        2,
         new Othello(8))
     },
     ROUND_ROBIN_DAEMON_PATIENCE = 50;
