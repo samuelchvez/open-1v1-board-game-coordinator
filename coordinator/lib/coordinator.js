@@ -18,10 +18,10 @@ var gameConstants = require('./games/constants'),
 var tournaments = {
       '142857': new League(
         '142857',
-        2,
+        4,
         new Othello(8))
     },
-    ROUND_ROBIN_DAEMON_PATIENCE = 50;
+    ROUND_ROBIN_DAEMON_PATIENCE = 100;
 
 
 function getRoom(tournament){
@@ -195,6 +195,9 @@ function nextGameDaemonProcedure(socket, tournament){
 
     // Clear interval
     clearInterval(tournament.daemonIntervalID);
+
+    // Tournament finished signal
+    socket.broadcast.to(roomName).emit('tournament_finished');
   }
 }
 
@@ -282,27 +285,29 @@ function play(socket, data){
       var result = game.play(
         player,
         movementPlayed,
-        function(nextPlayer){
+        function(cGame, nextPlayer){
 
           // Send signal to player
           nextPlayer.socket.emit('ready', {
-            turn_id: game.currentTurn,
-            game_id: game.id,
-            board: game.board,
-            movementNumber: game.movementNumber
+            turn_id: cGame.currentTurn,
+            game_id: cGame.id,
+            board: cGame.board,
+            movementNumber: cGame.movementNumber
           });
         },
-        function(winnerTurnID){
+        function(cGame, winnerPlayer){
+
+          var winnerTurnID = cGame.player_1.id === winnerPlayer.id ? gameConstants.PLAYER_1_TURN_ID : gameConstants.PLAYER_2_TURN_ID;
 
           // Notify game finished to the players
-          player_1.socket.emit('finish', {
-            game_id: game.id,
+          cGame.player_1.socket.emit('finish', {
+            game_id: cGame.id,
             winner_turn_id: winnerTurnID,
             turn_id: gameConstants.PLAYER_1_TURN_ID
           });
 
-          player_2.socket.emit('finish', {
-            game_id: game.id,
+          cGame.player_2.socket.emit('finish', {
+            game_id: cGame.id,
             winner_turn_id: winnerTurnID,
             turn_id: gameConstants.PLAYER_2_TURN_ID
           });

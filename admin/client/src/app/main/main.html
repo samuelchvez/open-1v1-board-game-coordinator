@@ -2,12 +2,12 @@
   <div class="row">
     <div class="col">
       <h1>
-        Othello League ({{ ctrl.players.length }})
+        Othello League ({{ 0 || ctrl.players.length }})
         <span class="tag tag-success tag-small" ng-if="ctrl.games.length > 0">Already started</span>
       </h1>
       <p>Welcome to the <strong>Othello League's Dashboard</strong>. Here you can watch and control what is going on with the league. For example, the following table shows the AI players that are currently online.</p>
 
-      <p class="placeholder" ng-show="ctrl.players.length === 0">Waiting players to connect...</p>
+      <p class="placeholder" ng-show="!ctrl.players || ctrl.players.length === 0">Waiting players to connect...</p>
 
       <table class="players data-table" ng-show="ctrl.players.length > 0">
         <tr>
@@ -79,7 +79,7 @@
       <h2 class="ongoing-events-title">Recent games ({{ ctrl.games.length }})</h2>
       <p>A continuación verás una tabla con todos los partidos que están ocurriendo en este momento. Los partidos más viejos están en la posición más baja, luego de unos minutos desaparecerán.</p>
 
-      <p class="placeholder" ng-show="ctrl.games.length === 0">Waiting the league to start...</p>
+      <p class="placeholder" ng-show="!ctrl.players || ctrl.games.length === 0">Waiting the league to start...</p>
 
       <table class="games data-table" ng-show="ctrl.games.length > 0">
         <tr>
@@ -91,7 +91,7 @@
         </tr>
 
         <tr ng-repeat="game in ctrl.games | orderBy: '-date_time' ">
-          <td>{{ $index }}</td>
+          <td>{{ ctrl.games.length - $index }}</td>
           <td>{{ game.id }}</td>
           <td am-time-ago="game.date_time"></td>
           <td>

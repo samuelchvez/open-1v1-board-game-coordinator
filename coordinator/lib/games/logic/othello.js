@@ -5,7 +5,7 @@ function Othello(size){
   this.size = size - size % 2; // Convert to even
 }
 
-Othello.prototype.play = function(game, player, movement, nextCb, finishCb, errorCb){
+Othello.prototype.play = function(game, player, movement, nextGameCb, finishGameCb, errorCb){
 
   // TODO: take size into account (mostly for validation purposes)
 
@@ -27,20 +27,14 @@ Othello.prototype.play = function(game, player, movement, nextCb, finishCb, erro
 
   // ---------------------------------------------------------------------------
 
-  if(game.movementNumber > 58){
+  if(game.movementNumber > 2){
 
-    var choca = parseInt(Math.floor(Math.random() * 2));
-
-    // Aux message
-
-    // Select winner
-    var winnerTurnID = choca === 0 ? gameConstants.PLAYER_1_TURN_ID : gameConstants.PLAYER_2_TURN_ID;
-
-    // TODO: handle draw
+    // Calculate random winner
+    var rWin = parseInt(Math.floor(Math.random() * 2));
 
     // Calculate winner and loser
-    game.winner = choca === 0 ? game.player_1 : game.player_2;
-    game.loser = choca === 0 ? game.player_2 : game.player_1;
+    game.winner = rWin === 0 ? game.player_1 : game.player_2;
+    game.loser = rWin === 0 ? game.player_2 : game.player_1;
 
     // Update wins and loses
     game.winner.wins++;
@@ -50,7 +44,7 @@ Othello.prototype.play = function(game, player, movement, nextCb, finishCb, erro
     game.status = gameConstants.STATUS.finished;
 
     // Finish callback
-    finishCb(winnerTurnID)
+    finishGameCb(game, game.winner)
 
   }
   else{
@@ -65,7 +59,7 @@ Othello.prototype.play = function(game, player, movement, nextCb, finishCb, erro
       game.currentTurn = gameConstants.PLAYER_2_TURN_ID;
 
       // Ask player 2 to play
-      nextCb(game.player_2);
+      nextGameCb(game, game.player_2);
     }
 
     // If player 2
@@ -75,7 +69,7 @@ Othello.prototype.play = function(game, player, movement, nextCb, finishCb, erro
       game.currentTurn = gameConstants.PLAYER_1_TURN_ID;
 
       // Ask player 1 to play
-      nextCb(game.player_1);
+      nextGameCb(game, game.player_1);
     }
 
     else{

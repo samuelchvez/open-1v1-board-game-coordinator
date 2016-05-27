@@ -13,13 +13,32 @@ function League(id, setSize, gameLogic){
   this.gameLogic = gameLogic;
 }
 
+function findPlayer(playerTable, userName){
+
+  // If the table is defined
+  if(playerTable){
+
+    // For each player in the player table
+    for(playerID in playerTable){
+
+      // If the username is already registered
+      if(playerTable[playerID].user_name == userName){
+        return playerTable[playerID];
+      }
+    }
+  }
+
+  return undefined;
+}
+
 League.prototype.registerPlayer = function(player, successCb, failureCb){
 
   // If the league is ready to register players
   if(this.status === tournamentConstants.STATUS.waiting){
 
     // If the player is not already registered for this league
-    if(!(player.id in this.playerTable)){
+    var playerFound = findPlayer(this.playerTable, player.user_name);
+    if(!playerFound){
 
       // Register
       this.playerTable[player.id] = player;
@@ -33,6 +52,11 @@ League.prototype.registerPlayer = function(player, successCb, failureCb){
       });
     }
     else{
+
+      // Register
+      this.playerTable[playerFound.id] = player;
+      player.id = playerFound.id;
+
       successCb({
         status: 202,
         message: 'Player already registered in league ' + this.id
@@ -114,8 +138,6 @@ League.prototype.getNextGame = function(){
 
   // For each pending game
   var pendingGames = this.getPendingGames();
-
-  // console.log(pendingGames.length);
 
   for(var i = 0; i < pendingGames.length; i++){
 
