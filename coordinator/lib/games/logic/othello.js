@@ -42,7 +42,7 @@ Othello.prototype.ix = function(x, y) {
   return x + y * this.N;
 }
 
-Othello.prototype.getStartingBoard = function(blackStarts){
+Othello.prototype.getStartingBoard = function(){
 
   var board = [];
 
@@ -53,18 +53,11 @@ Othello.prototype.getStartingBoard = function(blackStarts){
   var x2 = this.N >> 1;
   var y2 = this.N >> 1;
 
-  if(blackStarts){
-    board[ix(x2 - 1, y2 - 1)] = WHITE;
-    board[ix(x2 - 1, y2 - 0)] = BLACK;
-    board[ix(x2 - 0, y2 - 1)] = BLACK;
-    board[ix(x2 - 0, y2 - 0)] = WHITE;
-  }
-  else{
-    board[ix(x2 - 1, y2 - 1)] = BLACK;
-    board[ix(x2 - 1, y2 - 0)] = WHITE;
-    board[ix(x2 - 0, y2 - 1)] = WHITE;
-    board[ix(x2 - 0, y2 - 0)] = BLACK;
-  }
+  // Center pieces
+  board[ix(x2 - 1, y2 - 1)] = WHITE;
+  board[ix(x2 - 1, y2 - 0)] = BLACK;
+  board[ix(x2 - 0, y2 - 1)] = BLACK;
+  board[ix(x2 - 0, y2 - 0)] = WHITE;
 
   return board;
 }
@@ -101,7 +94,7 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
   ];
 
   // Calculate which tiles to flip
-  var  tilePositionsToTurn = [];
+  var  tilePositionsToFlip = [];
 
   // For each movement direction
   for (var i = 0; i < deltaDirections.length; i++){
@@ -146,12 +139,12 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
     // If we should capture
     if(shouldCaptureInThisDirection){
       for(positionToTurn in positionsToTurn){
-        tilePositionsToTurn.push(positionToTurn);
+        tilePositionsToFlip.push(positionToTurn);
       }
     }
   }
 
-  return tilePositionsToTurn;
+  return tilePositionsToFlip;
 };
 
 Othello.prototype.getAllValidMoves = function(board, tileColor){
