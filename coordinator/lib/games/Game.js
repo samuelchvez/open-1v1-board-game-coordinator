@@ -1,13 +1,12 @@
 var gameRandom = require('../utils/gameRandom'),
     gameConstants = require('./constants');
 
-function Game(logic, player_1, player_2, player_1Turn){
+function Game(logic, player_1, player_2){
   this.id = gameRandom.getID();
   this.player_1 = player_1;
   this.player_2 = player_2;
-  this.board = logic.getStartingBoard(player_1Turn);
   this.extra = {};
-  this.currentTurn = player_1Turn ? gameConstants.PLAYER_1_TURN_ID : gameConstants.PLAYER_2_TURN_ID;
+  this.currentTurn = gameConstants.PLAYER_1_TURN_ID;
   this.movementNumber = 0;
 
   // Hidden

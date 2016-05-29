@@ -21,6 +21,7 @@ var tournaments = {
         4,
         new Othello(8))
     },
+    onlinePlayers = {},
     ROUND_ROBIN_DAEMON_PATIENCE = 100;
 
 
@@ -68,6 +69,29 @@ function signIn(socket, data){
           // Join socket to the tournament room
           socket.join(room);
 
+          // Register player / tournament relation, used in disconnect event
+          (function(s, r, t, p){
+
+            s.on('disconnect', function(){
+
+              // Socket leaving room
+              s.leave(r);
+
+              // Unregister player from tournament
+              t.unregisterPlayer(
+                p,
+                function(data){
+                  s.broadcast.to(r).emit(
+                    'player_list_changed',
+                    gameLists.getUnsocketedPlayerList(t.playerTable));
+                },
+
+                // TODO: handle errors
+                function(data){});
+            });
+
+          })(socket, room, tournament, player);
+
           // Emit success signin signal
           socket.emit('ok_signin');
 
@@ -110,6 +134,9 @@ function signIn(socket, data){
       socket.emit(
         'game_list_changed',
         gameLists.getUnsocketedPlayerGameList(tournament.ongoingGames));
+
+      // Emit current tournament status
+      socket.emit('tournament_status_changed', {status: tournament.status});
     }
   }
   else{
@@ -142,26 +169,12 @@ function nextGameDaemonProcedure(socket, tournament){
       // Register new game
       tournament.ongoingGames[nextGame.id] = nextGame;
 
-      if (nextGame.currentTurn === gameConstants.PLAYER_1_TURN_ID){
-
-        // Notify player 1
-        nextGame.player_1.socket.emit('ready', {
-          game_id: nextGame.id,
-          turn_id: gameConstants.PLAYER_1_TURN_ID,
-          board: nextGame.board,
-          movementNumber: nextGame.movementNumber
-        });
-      }
-      else{
-
-        // Notify player 2
-        nextGame.player_2.socket.emit('ready', {
-          game_id: nextGame.id,
-          turn_id: gameConstants.PLAYER_2_TURN_ID,
-          board: nextGame.board,
-          movementNumber: nextGame.movementNumber
-        });
-      }
+      nextGame.player_1.socket.emit('ready', {
+        game_id: nextGame.id,
+        player_turn_id: gameConstants.PLAYER_1_TURN_ID,
+        board: nextGame.board,
+        movementNumber: nextGame.movementNumber
+      });
 
       // Log that match started
       console.log(
@@ -197,7 +210,11 @@ function nextGameDaemonProcedure(socket, tournament){
     clearInterval(tournament.daemonIntervalID);
 
     // Tournament finished signal
-    socket.broadcast.to(roomName).emit('tournament_finished');
+    socket.broadcast.to(roomName).emit(
+      'tournament_status_changed', {
+        status: tournamentConstants.STATUS.finished
+      }
+    );
   }
 }
 
@@ -213,9 +230,10 @@ function startTournament(socket, tournamentID){
       // Start
       tournament.start(function(games){
 
-        // TODO: emit
+        // Emit signal indicating that tournament status changed
         socket.broadcast.to(
-          getRoom(tournament)).emit('tournament_started');
+          getRoom(tournament)).emit('tournament_status_changed', { status: tournamentConstants.STATUS.ongoing });
+        socket.emit('tournament_status_changed', { status: tournamentConstants.STATUS.ongoing });
 
         console.log("");
         console.log("ATTENTION!! Tournament " + tournament.id + " has started");
@@ -234,7 +252,7 @@ function startTournament(socket, tournamentID){
 
 function playerReady(socket, data){
   var tournamentID = data.tournament_id,
-      turnID = data.turn_id,
+      turnID = data.player_turn_id,
       gameID = data.game_id,
       player;
 
@@ -263,7 +281,7 @@ function playerReady(socket, data){
 function play(socket, data){
   var tournamentID = data.tournament_id,
       gameID = data.game_id,
-      playerTurnID = data.turn_id,
+      playerTurnID = data.player_turn_id,
       movement = data.movement;
 
   // If the tournament is live
@@ -282,14 +300,14 @@ function play(socket, data){
           movementPlayed = data.movement;
 
       // Game logic
-      var result = game.play(
+      game.play(
         player,
         movementPlayed,
         function(cGame, nextPlayer){
 
           // Send signal to player
           nextPlayer.socket.emit('ready', {
-            turn_id: cGame.currentTurn,
+            player_turn_id: cGame.currentTurn,
             game_id: cGame.id,
             board: cGame.board,
             movementNumber: cGame.movementNumber
@@ -303,13 +321,13 @@ function play(socket, data){
           cGame.player_1.socket.emit('finish', {
             game_id: cGame.id,
             winner_turn_id: winnerTurnID,
-            turn_id: gameConstants.PLAYER_1_TURN_ID
+            player_turn_id: gameConstants.PLAYER_1_TURN_ID
           });
 
           cGame.player_2.socket.emit('finish', {
             game_id: cGame.id,
             winner_turn_id: winnerTurnID,
-            turn_id: gameConstants.PLAYER_2_TURN_ID
+            player_turn_id: gameConstants.PLAYER_2_TURN_ID
           });
 
           // Emit that player list changed
@@ -342,6 +360,10 @@ function attatchEvents(socket){
 
   // Listen to the disconnect event --------------------------------------------
   socket.on('disconnect', function () {
+
+    for(tournamentID in tournaments){
+
+    }
 
     // TODO: handle properly the disconection of a user
     // NOTE: ***THIS WON'T BE A TRIVIAL LOGIC***

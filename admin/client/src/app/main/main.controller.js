@@ -12,6 +12,9 @@
     var vm = this,
         tournamentID = 142857;
 
+    // Set tournament as waiting
+    vm.tournament = { status: 'waiting' };
+
     // When the user is connected
     mainSocket.on('connect', function(){
       console.log("Conectado.");
@@ -31,7 +34,7 @@
     mainSocket.on('game_list_changed', gameListChanged);
 
     // When the tournament has ended
-    mainSocket.on('league_finished', leagueFinished);
+    mainSocket.on('tournament_status_changed', tournamentStatusChanged);
 
     function playerListChanged(data){
       vm.players = data;
@@ -43,7 +46,9 @@
     }
 
     // TODO: implement this
-    function leagueFinished(){}
+    function tournamentStatusChanged(data){
+      vm.tournament.status = data.status;
+    }
 
     vm.getStatus = function(player){
       if(player.available){

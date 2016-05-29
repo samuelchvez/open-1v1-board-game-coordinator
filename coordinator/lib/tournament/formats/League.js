@@ -66,7 +66,41 @@ League.prototype.registerPlayer = function(player, successCb, failureCb){
   else{
     failureCb({
       status: 400,
-      message: 'League is not waiting connection'
+      message: 'League is not waiting connections'
+    });
+  }
+}
+
+League.prototype.unregisterPlayer = function(player, successCb, failureCb){
+
+  // If the league is ready to register players
+  if(this.status === tournamentConstants.STATUS.waiting){
+
+    // If the player is not already registered for this league
+    var playerFound = findPlayer(this.playerTable, player.user_name);
+    if(!playerFound){
+
+      // Notify failure
+      failureCb({
+        status: 404,
+        message: 'Player wasnt registered in league ' + this.id
+      });
+    }
+    else{
+
+      // Unregister
+      delete this.playerTable[playerFound.id];
+
+      successCb({
+        status: 200,
+        message: 'Player successfully unregistered from league ' + this.id
+      });
+    }
+  }
+  else{
+    failureCb({
+      status: 400,
+      message: 'League is not waiting connections, therefore you cannot unregister a player'
     });
   }
 }
@@ -93,11 +127,19 @@ League.prototype.start = function(cb){
         lastGame = newGame;
 
         // Generate new game
-        newGame = new Game(
-          this.gameLogic,
-          this.playerTable[playerIDs[i]],
-          this.playerTable[playerIDs[j]],
-          k % 2 === 0);
+
+        if(k % 2 === 0){
+          newGame = new Game(
+            this.gameLogic,
+            this.playerTable[playerIDs[i]],
+            this.playerTable[playerIDs[j]]);
+        }
+        else{
+          newGame = new Game(
+            this.gameLogic,
+            this.playerTable[playerIDs[j]],
+            this.playerTable[playerIDs[i]]);
+        }
 
         newGame.series = k;
 
