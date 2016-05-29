@@ -82,25 +82,37 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
   var otc = getOpponentTileColor(playingColor);
 
   // Possible move directions
-  var deltaDirections =[
-    this.ix(0, 1), // Down
-    this.ix(1, 1), // Right down
-    this.ix(1, 0), // Right
-    this.ix(1, -1), // Right up
-    this.ix(0, -1), // Up
-    this.ix(-1, -1), // Left up
-    this.ix(-1, 0), // Left
-    this.ix(-1, 1)] // Left down
-  ];
+  var deltaDirections ={
+    down: this.ix(0, 1), // Down
+    right_down: this.ix(1, 1), // Right down
+    right: this.ix(1, 0), // Right
+    right_up: this.ix(1, -1), // Right up
+    up: this.ix(0, -1), // Up
+    left_up: this.ix(-1, -1), // Left up
+    left: this.ix(-1, 0), // Left
+    left_down: this.ix(-1, 1)] // Left down
+  };
+
+  // Auxiliar movement directions
+  var lefts = [
+        deltaDirections.left,
+        deltaDirections.left_down,
+        deltaDirections.left_up
+      ],
+      rights = [
+          deltaDirections.right,
+          deltaDirections.right_down,
+          deltaDirections.right_up
+      ];
 
   // Calculate which tiles to flip
   var  tilePositionsToFlip = [];
 
   // For each movement direction
-  for (var i = 0; i < deltaDirections.length; i++){
+  for (movementKey in deltaDirections){
 
     // Movement delta
-    var movementDelta = deltaDirections[i],
+    var movementDelta = deltaDirections[movementKey],
 
     // Position tracker
         cPosition = position,
@@ -130,6 +142,14 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
           shouldCaptureInThisDirection = board[cPosition] !== EMPTY;
           break;
         }
+      }
+
+      // Check if next movement is going to wrap a row
+
+      // Off board
+      if((cPosition % this.N === 0 && movementDelta in lefts) ||
+        ((cPosition % this.N === this.N - 1) && movementDelta in rights)){
+        break;
       }
 
       // Move
