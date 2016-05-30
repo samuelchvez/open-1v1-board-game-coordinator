@@ -315,7 +315,10 @@ function play(socket, data){
         },
         function(cGame, winnerPlayer){
 
-          var winnerTurnID = cGame.player_1.id === winnerPlayer.id ? gameConstants.PLAYER_1_TURN_ID : gameConstants.PLAYER_2_TURN_ID;
+          var winnerTurnID;
+
+          if(winnerPlayer)
+            winnerTurnID = cGame.player_1.id === winnerPlayer.id ? gameConstants.PLAYER_1_TURN_ID : gameConstants.PLAYER_2_TURN_ID;
 
           // Notify game finished to the players
           cGame.player_1.socket.emit('finish', {

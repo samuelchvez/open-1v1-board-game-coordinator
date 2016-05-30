@@ -5,6 +5,7 @@ function Game(logic, player_1, player_2){
   this.id = gameRandom.getID();
   this.player_1 = player_1;
   this.player_2 = player_2;
+  this.board = logic.getStartingBoard();
   this.extra = {};
   this.currentTurn = gameConstants.PLAYER_1_TURN_ID;
   this.movementNumber = 0;

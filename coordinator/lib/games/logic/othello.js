@@ -21,20 +21,13 @@ function getOpponentTileColor(tileColor){
 }
 
 Othello.prototype.validateBoard = function(boardArray){
-  if(boardArray.length === Math.pow(this.size, 2)){
-    for(tile in boardArray){
-      if(!(tile in VALID_TILES))
-        return false;
-    }
 
-    return true;
-  }
-
-  return false;
+  // TODO: why each tile in board array is string??
+  return boardArray.length === Math.pow(this.N, 2);
 }
 
 Othello.prototype.isOnBoard = function(position){
-  return position >= 0 && position < Math.pow(this.size, 2);
+  return position >= 0 && position < Math.pow(this.N, 2);
 }
 
 
@@ -48,16 +41,16 @@ Othello.prototype.getStartingBoard = function(){
 
   for (var x = 0; x < this.N; x++)
     for (var y = 0; y < this.N; y++)
-      board[ix(x, y)] = EMPTY;
+      board[this.ix(x, y)] = EMPTY;
 
   var x2 = this.N >> 1;
   var y2 = this.N >> 1;
 
   // Center pieces
-  board[ix(x2 - 1, y2 - 1)] = WHITE;
-  board[ix(x2 - 1, y2 - 0)] = BLACK;
-  board[ix(x2 - 0, y2 - 1)] = BLACK;
-  board[ix(x2 - 0, y2 - 0)] = WHITE;
+  board[this.ix(x2 - 1, y2 - 1)] = WHITE;
+  board[this.ix(x2 - 1, y2 - 0)] = BLACK;
+  board[this.ix(x2 - 0, y2 - 1)] = BLACK;
+  board[this.ix(x2 - 0, y2 - 0)] = WHITE;
 
   return board;
 }
@@ -73,7 +66,7 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
     !this.isOnBoard(position) ||
 
     // If it's an empty position
-    board[position] !== EMPTY_TILE_ID){
+    board[position] !== EMPTY){
 
     return [];
   }
@@ -90,7 +83,7 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
     up: this.ix(0, -1), // Up
     left_up: this.ix(-1, -1), // Left up
     left: this.ix(-1, 0), // Left
-    left_down: this.ix(-1, 1)] // Left down
+    left_down: this.ix(-1, 1) // Left down
   };
 
   // Auxiliar movement directions
@@ -158,8 +151,8 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
 
     // If we should capture
     if(shouldCaptureInThisDirection){
-      for(positionToTurn in positionsToTurn){
-        tilePositionsToFlip.push(positionToTurn);
+      for(var i = 0; i < positionsToTurn.length; i++){
+        tilePositionsToFlip.push(positionsToTurn[i]);
       }
     }
   }
@@ -188,7 +181,11 @@ Othello.prototype.judge = function(board){
   judgement[WHITE] = 0;
   judgement[EMPTY] = 0;
 
-  for(tile in board){judgement[tile]++;}
+  for(var i = 0; i < board.length; i++){
+    judgement[board[i]]++;
+  }
+
+  return judgement;
 }
 
 Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGameCb, errorCb){
@@ -205,7 +202,7 @@ Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGame
     playingColor = BLACK;
     playingTurnID = gameConstants.PLAYER_1_TURN_ID;
 
-    otherPlayer = game.plalyer_2;
+    otherPlayer = game.player_2;
     otherPlayerColor = WHITE;
     otherTurnID = gameConstants.PLAYER_2_TURN_ID;
   }
@@ -227,8 +224,8 @@ Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGame
     if(tilePositionsToFlip.length > 0){
 
       // Flip and place all the captured tiles
-      for(tilePosition in tilePositionsToFlip){
-        game.board[tilePosition] = playingColor;
+      for(var i = 0; i < tilePositionsToFlip.length; i++){
+        game.board[tilePositionsToFlip[i]] = playingColor;
       }
 
       // And then flip the current position
@@ -320,7 +317,7 @@ Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGame
         game.status = gameConstants.STATUS.finished;
 
         // Finish game callback
-        finishGameC(game, game.winner);
+        finishGameCb(game, game.winner);
       }
     }
   }
