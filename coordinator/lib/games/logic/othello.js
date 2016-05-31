@@ -111,7 +111,7 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
         cPosition = position,
 
     // Tiles positions captured over this movement direction
-        positionsToTurn = [],
+        positionsToFlip = [],
 
     // Flag indicating if theere are tiles to capture in this movement direction
         shouldCaptureInThisDirection = false;
@@ -124,7 +124,7 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
 
         // If in this new position is an opponent tile
         if(board[cPosition] === otc){
-          positionsToTurn.push(cPosition);
+          positionsToFlip.push(cPosition);
         }
         else{
 
@@ -140,10 +140,9 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
       // Check if next movement is going to wrap a row
 
       // Off board
-      if((cPosition % this.N === 0 && movementDelta in lefts) ||
-        ((cPosition % this.N === this.N - 1) && movementDelta in rights)){
+      if((cPosition % this.N === 0 && lefts.indexOf(movementDelta) > -1) ||
+        ((cPosition % this.N === this.N - 1) && rights.indexOf(movementDelta) > -1))
         break;
-      }
 
       // Move
       cPosition += movementDelta;
@@ -151,8 +150,8 @@ Othello.prototype.getTilePositionsToFlip = function(board, playingColor, positio
 
     // If we should capture
     if(shouldCaptureInThisDirection){
-      for(var i = 0; i < positionsToTurn.length; i++){
-        tilePositionsToFlip.push(positionsToTurn[i]);
+      for(var i = 0; i < positionsToFlip.length; i++){
+        tilePositionsToFlip.push(positionsToFlip[i]);
       }
     }
   }
@@ -304,8 +303,8 @@ Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGame
 
           // If white wins, it means player 2 wins
           else{
-            game.winner = game.player_1;
-            game.loser = game.player_2;
+            game.winner = game.player_2;
+            game.loser = game.player_1;
           }
 
           // Update wins and loses
