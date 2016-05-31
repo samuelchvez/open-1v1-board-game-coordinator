@@ -413,6 +413,44 @@ function unstuckGame(socket, data){
   }
 }
 
+function resetTournament(socket, tournamentID){
+
+  // TODO: from DB
+  if(tournamentID in tournaments){
+
+    var tournament = tournaments[tournamentID];
+
+    if(tournament.status !== tournamentConstants.STATUS.waiting){
+
+      // Start
+      tournament.reset(function(){
+
+        // Emit signal indicating that tournament status changed
+        socket.broadcast.to(
+          getRoom(tournament)).emit('tournament_status_changed', { status: tournamentConstants.STATUS.waiting });
+        socket.emit('tournament_status_changed', { status: tournamentConstants.STATUS.waiting });
+
+        // Emit that player list changed
+        socket.emit(
+            'player_list_changed',
+            gameLists.getUnsocketedPlayerList(tournament.playerTable));
+
+        // Emit that game list changed
+        socket.emit(
+            'game_list_changed',
+            gameLists.getUnsocketedPlayerGameList(tournament.ongoingGames));
+
+        console.log("");
+        console.log("ATTENTION!! Tournament " + tournament.id + " has been reset");
+        console.log("");
+
+        // Clear interval
+        clearInterval(tournament.daemonIntervalID);
+      });
+    }
+  }
+}
+
 function attatchEvents(socket){
 
   // Listen to the signin event ------------------------------------------------
@@ -420,12 +458,17 @@ function attatchEvents(socket){
     signIn(socket, data);
   });
 
-  // Listen to the start league signal -----------------------------------------
+  // Listen to the start tournament signal -------------------------------------
   socket.on('start_tournament', function(tournamentID){
     startTournament(socket, tournamentID);
   });
 
-  // Listen to the disconnect event --------------------------------------------
+  // Listen to the reset tournament signal -----------------------------------
+  socket.on('reset_tournament', function(tournamentID){
+    resetTournament(socket, tournamentID);
+  });
+
+  // Listen to the unstuck game event ------------------------------------------
   socket.on('unstuck_game', function(data){
     unstuckGame(socket, data);
   });

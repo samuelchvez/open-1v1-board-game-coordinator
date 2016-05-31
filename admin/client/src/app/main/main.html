@@ -77,6 +77,16 @@
           Start Tournament
         </a>
 
+        <a
+          we-button
+          icon="refresh"
+          color="danger"
+          class="block"
+          ng-click="ctrl.resetTournament()"
+          ng-show="ctrl.tournament.status !== 'waiting'">
+          Reset Tournament
+        </a>
+
       </div>
 
       <h2 class="ongoing-events-title">Recent games ({{ ctrl.games.length }})</h2>

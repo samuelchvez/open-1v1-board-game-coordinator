@@ -67,6 +67,10 @@
       mainSocket.emit('start_tournament', tournamentID);
     }
 
+    vm.resetTournament = function(){
+      mainSocket.emit('reset_tournament', tournamentID);
+    }
+
     vm.unstuckGame = function(gameID, turnID){
       mainSocket.emit('unstuck_game', {
         tournament_id: tournamentID,

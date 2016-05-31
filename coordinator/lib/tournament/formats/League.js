@@ -162,6 +162,25 @@ League.prototype.start = function(cb){
 
 }
 
+League.prototype.reset = function(cb){
+
+  // Clear roundRobin
+  this.roundRobinGames = [];
+
+  // Clear ongoing games
+  this.ongoingGames = {};
+
+  // Clear players
+  this.playerTable = {};
+
+  // Change status
+  this.status = tournamentConstants.STATUS.waiting;
+
+  // Callback
+  cb();
+
+}
+
 League.prototype.finish = function(){
   this.status = tournamentConstants.STATUS.finished;
 }
