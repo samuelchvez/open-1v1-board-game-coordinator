@@ -219,6 +219,7 @@ Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGame
 
     // Deduct tiles that will be flipped
     var tilePositionsToFlip = this.getTilePositionsToFlip(game.board, playingColor, movement);
+    console.log("Current: " + playingTurnID + ": " + tilePositionsToFlip);
 
     if(tilePositionsToFlip.length > 0){
 
@@ -259,6 +260,8 @@ Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGame
     // Check if there is any valid movement left
     var nextValidMoves = this.getAllValidMoves(game.board, otherPlayerColor);
 
+    console.log("Next: " + playingTurnID + ": " + tilePositionsToFlip);
+
     // If there are valid movements for the defacto next player
     if(nextValidMoves.length > 0){
 
@@ -272,6 +275,8 @@ Othello.prototype.play = function(game, player, movement, nextMoveCb, finishGame
 
       // Check if there is any valid movement left
       nextValidMoves = this.getAllValidMoves(game.board, playingColor);
+
+      console.log("Any: " + playingTurnID + ": " + tilePositionsToFlip);
 
       if(nextValidMoves.length > 0){
 

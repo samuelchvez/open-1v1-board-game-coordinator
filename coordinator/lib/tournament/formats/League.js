@@ -172,6 +172,8 @@ League.prototype.reset = function(cb){
   // Free players
   for(playerID in this.playerTable){
     this.playerTable[playerID].available = true;
+    this.playerTable[playerID].wins = 0;
+    this.playerTable[playerID].loses = 0;
   }
 
   // Change status

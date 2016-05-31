@@ -18,7 +18,7 @@ var gameConstants = require('./games/constants'),
 var tournaments = {
       '142857': new League(
         '142857',
-        2,
+        20,
         new Othello(8))
     },
     onlinePlayers = {},
@@ -268,19 +268,22 @@ function playerReady(socket, data){
     // Retrieve player
     var tournament = tournaments[tournamentID];
 
-    // Retrieve game
-    var game = tournament.ongoingGames[gameID];
+    if(gameID in tournament.ongoingGames){
 
-    // Select player
-    player = turnID === gameConstants.PLAYER_1_TURN_ID ? game.player_1 : game.player_2;
+      // Retrieve game
+      var game = tournament.ongoingGames[gameID];
 
-    // Set as available
-    player.available = true;
+      // Select player
+      player = turnID === gameConstants.PLAYER_1_TURN_ID ? game.player_1 : game.player_2;
 
-    socket.broadcast.to(getRoom(tournament)).emit(
-      'player_list_changed',
-      gameLists.getUnsocketedPlayerList(tournament.playerTable)
-    );
+      // Set as available
+      player.available = true;
+
+      socket.broadcast.to(getRoom(tournament)).emit(
+        'player_list_changed',
+        gameLists.getUnsocketedPlayerList(tournament.playerTable)
+      );
+    }
   }
 }
 
