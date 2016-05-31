@@ -33,14 +33,14 @@ function findPlayer(playerTable, userName){
 
 League.prototype.registerPlayer = function(player, successCb, failureCb){
 
-  // If the league is ready to register players
-  if(this.status === tournamentConstants.STATUS.waiting){
+  // If the player is not already registered for this league
+  var playerFound = findPlayer(this.playerTable, player.user_name);
+  if(!playerFound){
 
-    // If the player is not already registered for this league
-    var playerFound = findPlayer(this.playerTable, player.user_name);
-    if(!playerFound){
+    // If the league is ready to register players
+    if(this.status === tournamentConstants.STATUS.waiting){
 
-      // Register
+      // Register brand new player
       this.playerTable[player.id] = player;
 
       // TODO: save in DB
@@ -52,21 +52,20 @@ League.prototype.registerPlayer = function(player, successCb, failureCb){
       });
     }
     else{
-
-      // Register
-      this.playerTable[playerFound.id] = player;
-      player.id = playerFound.id;
-
-      successCb({
-        status: 202,
-        message: 'Player already registered in league ' + this.id
+      failureCb({
+        status: 400,
+        message: 'League is not waiting connections'
       });
     }
   }
   else{
-    failureCb({
-      status: 400,
-      message: 'League is not waiting connections'
+
+    // Reconnect: update socket reference
+    this.playerTable[playerFound.id].socket = player.socket;
+
+    successCb({
+      status: 202,
+      message: 'Player already registered in league ' + this.id
     });
   }
 }

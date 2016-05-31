@@ -46,8 +46,6 @@
 
     // TODO: implement this
     function tournamentStatusChanged(data){
-      console.log("llegaaa");
-      console.log(data);
       vm.tournament.status = data.status;
     }
 
