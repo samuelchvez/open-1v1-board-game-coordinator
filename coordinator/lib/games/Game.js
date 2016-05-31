@@ -23,10 +23,10 @@ function Game(logic, player_1, player_2){
   this.rematch_id = 0;
 }
 
-Game.prototype.play = function(player, movement, nextCb, finishCb){
+Game.prototype.play = function(player, movement, nextCb, finishCb, errorCb){
 
   // Call this game's logic
-  this.logic.play(this, player, movement, nextCb, finishCb);
+  this.logic.play(this, player, movement, nextCb, finishCb, errorCb);
 }
 
 Game.prototype.start = function(){

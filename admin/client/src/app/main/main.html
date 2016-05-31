@@ -38,14 +38,6 @@
                 size="tiny"></a>
             </span>
 
-            <span ng-switch-when="getme">
-              <a
-                we-button
-                color="info"
-                icon="check"
-                size="tiny"></a>
-            </span>
-
             <span ng-switch-when="playing">
               <a
                 we-button
@@ -53,39 +45,44 @@
                 icon="times"
                 size="tiny"></a>
             </span>
-
-            <span ng-switch-when="waiting">
-              <a
-                we-button
-                color="warning"
-                icon="refresh"
-                size="tiny"></a>
-            </span>
-
           </td>
         </tr>
       </table>
 
-      <div class="start-league-section">
-        <a
-          we-button
-          icon="star"
-          color="warning"
-          class="block"
-          ng-click="ctrl.startTournament()"
-          ng-show="ctrl.tournament.status === 'waiting'">
-          Start Tournament
-        </a>
+      <div class="start-league-section" ng-switch="ctrl.tournament.status">
 
-        <a
-          we-button
-          icon="refresh"
-          color="danger"
-          class="block"
-          ng-click="ctrl.resetTournament()"
-          ng-show="ctrl.tournament.status !== 'waiting'">
-          Reset Tournament
-        </a>
+        <span ng-switch-when="waiting">
+          <a
+            we-button
+            icon="star"
+            color="warning"
+            class="block"
+            ng-click="ctrl.startTournament()">
+            Start Tournament
+          </a>
+        </span>
+
+        <span ng-switch-when="ongoing">
+          <a
+            we-button
+            icon="times"
+            color="danger"
+            class="block"
+            ng-click="ctrl.resetTournament()">
+            Stop and reset Tournament
+          </a>
+        </span>
+
+        <span ng-switch-when="finished">
+          <a
+            we-button
+            icon="refresh"
+            color="success"
+            class="block"
+            ng-click="ctrl.resetTournament()">
+            Start again
+          </a>
+        </span>
 
       </div>
 

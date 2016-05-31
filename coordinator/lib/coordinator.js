@@ -18,7 +18,7 @@ var gameConstants = require('./games/constants'),
 var tournaments = {
       '142857': new League(
         '142857',
-        4,
+        2,
         new Othello(8))
     },
     onlinePlayers = {},
@@ -156,7 +156,7 @@ function nextGameDaemonProcedure(socket, tournament){
 
   // Try to get the next game
   var nextGame = tournament.getNextGame(),
-      roomName = getRoom(tournament.id);
+      roomName = getRoom(tournament);
 
   // If the tournament is not finished and there is a next game
   if(!tournament.finished()){
@@ -211,6 +211,12 @@ function nextGameDaemonProcedure(socket, tournament){
 
     // Tournament finished signal
     socket.broadcast.to(roomName).emit(
+      'tournament_status_changed', {
+        status: tournamentConstants.STATUS.finished
+      }
+    );
+
+    socket.emit(
       'tournament_status_changed', {
         status: tournamentConstants.STATUS.finished
       }

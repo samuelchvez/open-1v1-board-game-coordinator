@@ -170,8 +170,10 @@ League.prototype.reset = function(cb){
   // Clear ongoing games
   this.ongoingGames = {};
 
-  // Clear players
-  this.playerTable = {};
+  // Free players
+  for(playerID in this.playerTable){
+    this.playerTable[playerID].available = true;
+  }
 
   // Change status
   this.status = tournamentConstants.STATUS.waiting;
