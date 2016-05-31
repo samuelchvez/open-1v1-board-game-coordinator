@@ -1,0 +1,55 @@
+<div class="grid frame">
+  <div class="row middle-xs">
+    <div class="col shrink content">
+
+      <div class="main-column">
+        <h1>Othello test client ({{ ctrl.userName }})</h1>
+
+        <div class="othello-board" ng-class="{ready: ctrl.ready}">
+
+          <div
+            class="tile"
+            ng-click="ctrl.play(tile.id)"
+            ng-repeat="tile in ctrl.boardTiles">
+
+            <div ng-switch="tile.color">
+              <div ng-switch-when="1" class="token black"></div>
+              <div ng-switch-when="2" class="token white"></div>
+              <div ng-switch-when="3" class="token last"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-data">
+          <div class="game-id">Game <strong>{{ ctrl.currentGameID }}</strong></div>
+          <div class="turn-id">
+            <span class="text">Piece:</span> <span class="token tiny" ng-class="{black: ctrl.currentTurnID === 1, white: ctrl.currentTurnID === 2}"></span>
+          </div>
+        </div>
+
+        <div class="grid result" ng-if="ctrl.gameFinished">
+          <div class="row middle-xs ce">
+            <div class="col shrink">
+
+              <a
+                ng-if="ctrl.winnerTurnID === ctrl.currentTurnID"
+                we-button
+                icon="check"
+                color="success"
+                ng-click="ctrl.setReady()">Winner</a>
+
+              <a
+                ng-if="ctrl.winnerTurnID !== ctrl.currentTurnID"
+                we-button
+                icon="times"
+                color="danger"
+                ng-click="ctrl.setReady()">Loser</a>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

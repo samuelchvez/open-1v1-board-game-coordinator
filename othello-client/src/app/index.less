@@ -1,0 +1,152 @@
+/* Do not remove the comments below. It's the markers used by wiredep to inject
+   less dependencies when defined in the bower.json of your dependencies */
+// bower:less
+// endbower
+
+@grid-content-padding:                                      2rem;
+@fa-font-path:                                              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/fonts/";
+@system-font-family:                                        'Open Sans', helvetica, sans-serif;
+@system-title-font-family:                                  'Montserrat', serif;
+@system-body-background:                                    #eee;
+@tag-small-height:                                          20px;
+@button-font-family:                                        @system-title-font-family;
+
+@font-color:                                                #666;
+
+@othello-board-size:                                        520px;
+@othello-board-border-color:                                #ccc;
+@othello-N:                                                 8;
+@othello-tile-bakground:                                    @black-15;
+@othello-title-size:                                        @othello-board-size / @othello-N;
+@othello-tile-padding:                                      4px;
+@othello-token-size:                                        @othello-title-size - 2 * @othello-tile-padding;
+@othello-black-tile-color:                                  @black-70;
+@othello-white-tile-color:                                  @white;
+@othello-last-tile-color:                                   green;
+@meta-token-tiny-size:                                      12px;
+
+
+body{
+  h1, h2{
+    color: @font-color;
+  }
+
+  .grid{
+    &.frame{
+      height: 100vh;
+    }
+  }
+
+  .main-column{
+    margin: auto;
+    position: relative;
+    width: @othello-board-size;
+  }
+
+  .othello-board{
+    .square(@othello-board-size);
+    border: 1px solid @othello-board-border-color;
+    opacity: 0.2;
+    position: relative;
+    transition: 0.5s;
+
+    .tile{
+      .square(@othello-title-size);
+      background: @othello-tile-bakground;
+      box-sizing: border-box;
+      cursor: auto;
+      float: left;
+      border: 1px solid @othello-board-border-color;
+      position: relative;
+
+      .token{
+        .circle(@othello-token-size);
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        left: @othello-tile-padding;
+        position: absolute;
+        top: @othello-tile-padding;
+
+        &.black{ background: @othello-black-tile-color; }
+        &.white{ background: @othello-white-tile-color; }
+        &.last{ background: @othello-last-tile-color; }
+      }
+    }
+
+    &.ready{
+      opacity: 1.0;
+
+      .evaluating{
+        opacity: 0.0;
+        transform: scale(0.9);
+        z-index: 0;
+      }
+
+      .tile{
+        cursor: pointer;
+      }
+    }
+  }
+
+  .result{
+    .square(@othello-board-size);
+    background: fadeout(@black, 40%);
+    left: 0;
+    position: absolute;
+    text-align: center;
+    top: 45px; // EXPECTED
+
+    .row{
+      height: 100%;
+      width: 100%;
+
+      .col{
+        width: 100%;
+      }
+    }
+  }
+
+  .meta-data{
+    .clearfix();
+    color: @othello-board-border-color;
+    font-size: 0.8rem;
+    line-height: 2rem;
+
+    .game-id{
+      float: left;
+    }
+
+    .turn-id{
+      float: right;
+    }
+
+    .text{
+      vertical-align: middle;
+    }
+
+    .token{
+      border: 1px solid @othello-board-border-color;
+      box-sizing: border-box;
+      vertical-align: middle;
+
+      &.tiny{
+        .circle(@meta-token-tiny-size);
+        display: inline-block;
+      }
+
+      &.black{
+        background: @othello-black-tile-color;
+        border: none;
+      }
+
+      &.white{
+        background: @othello-white-tile-color;
+      }
+    }
+  }
+}
+
+/* Do not remove the comments below. It's the markers used by gulp-inject to inject
+   all your less files automatically */
+// injector
+// endinjector
