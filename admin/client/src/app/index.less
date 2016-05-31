@@ -63,10 +63,6 @@ body{
       td, th{
         text-align: center;
 
-        &:nth-child(1){
-          width: 50px;
-        }
-
         &:nth-child(2){
           text-align: left;
         }
@@ -78,7 +74,22 @@ body{
     }
 
     &.games{
+      th, td{
+        text-align: center;
 
+        &:first-child{
+          width: 50px;
+        }
+
+        &:nth-child(1),
+        &:nth-child(2),{
+          text-align: left;
+        }
+
+        &:last-child{
+          width: 100px;
+        }
+      }
     }
   }
 

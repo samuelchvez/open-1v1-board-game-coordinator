@@ -86,15 +86,14 @@
 
       <table class="games data-table" ng-show="ctrl.games.length > 0">
         <tr>
-          <th>No</th>
           <th>Game ID</th>
           <th>Time</th>
           <th>Players</th>
           <th>Winner</th>
+          <th>Unstuck</th>
         </tr>
 
         <tr ng-repeat="game in ctrl.games | orderBy: '-date_time' ">
-          <td>{{ ctrl.games.length - $index }}</td>
           <td>{{ game.id }}</td>
           <td am-time-ago="game.date_time"></td>
           <td>
@@ -126,6 +125,22 @@
             <span
               class="tag tag-small tag-danger"
               ng-if="game.status !== 'finished'">ongoing</span>
+          </td>
+
+          <td>
+            <a
+              we-button
+              color="info"
+              icon="unlock"
+              size="tiny"
+              ng-click="ctrl.unstuckGame(game.id, 1)"></a>
+
+            <a
+              we-button
+              color="warning"
+              icon="unlock"
+              size="tiny"
+              ng-click="ctrl.unstuckGame(game.id, 2)"></a>
           </td>
         </tr>
       </table>

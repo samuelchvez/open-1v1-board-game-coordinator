@@ -399,6 +399,16 @@ function unstuckGame(socket, data){
         board: game.board
       });
 
+      // Emit that player list changed
+      socket.emit(
+          'player_list_changed',
+          gameLists.getUnsocketedPlayerList(tournament.playerTable));
+
+      // Emit that game list changed
+      socket.emit(
+          'game_list_changed',
+          gameLists.getUnsocketedPlayerGameList(tournament.ongoingGames));
+
     }
   }
 }

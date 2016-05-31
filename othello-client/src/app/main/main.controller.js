@@ -54,6 +54,7 @@
 
     // Ready to play signal
     mainSocket.on('ready', function(data){
+      vm.gameFinished = false;
       vm.currentGameID = data.game_id;
       vm.currentTurnID = data.player_turn_id;
       vm.boardTiles = transformBoard(data.board);

@@ -17,7 +17,6 @@
 
     // When the user is connected
     mainSocket.on('connect', function(){
-      console.log("Conectado.");
 
       mainSocket.emit('signin', {
         name:'TournamentAdministrator',
@@ -65,7 +64,15 @@
     }
 
     vm.startTournament = function(){
-      mainSocket.emit('start_tournament', 142857);
+      mainSocket.emit('start_tournament', tournamentID);
+    }
+
+    vm.unstuckGame = function(gameID, turnID){
+      mainSocket.emit('unstuck_game', {
+        tournament_id: tournamentID,
+        game_id: gameID,
+        winner_turn_id: turnID
+      });
     }
   }
 })(angular);
