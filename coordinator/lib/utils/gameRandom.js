@@ -8,7 +8,7 @@ function getID() {
   var newID;
 
   do{ newID = randInt(0, Number.MAX_SAFE_INTEGER); }
-  while(newID in GLOBAL_IDS);
+  while(GLOBAL_IDS.indexOf(newID) > -1);
 
   return newID;
 }

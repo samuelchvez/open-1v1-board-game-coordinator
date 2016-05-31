@@ -54,7 +54,7 @@ function getUnsocketedPlayerGameList(games, statusFilters){
     if(statusFilters && statusFilters.length > 0){
 
       // And the game status is in the status filters
-      if(cGame.status in statusFilters){
+      if(statusFilters.indexOf(cGame.status) > -1){
 
         // Push the game
         uspGames.push(getUnsocketedGameObject(cGame));
