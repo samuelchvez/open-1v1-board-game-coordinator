@@ -10,7 +10,7 @@
   function mainController($log, socketFactory) {
     var vm = this,
         N = 8,
-        coordinatorIP = prompt("Coordinator IP:"),
+        coordinatorIP = "http://" + prompt("Coordinator IP:") + ":3000",
         tournamentID = parseInt(prompt("Tournament ID:")),
         mainSocket = socketFactory({
           ioSocket: io.connect(coordinatorIP, {'sync disconnect on unload': true})
