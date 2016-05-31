@@ -324,13 +324,15 @@ function play(socket, data){
           cGame.player_1.socket.emit('finish', {
             game_id: cGame.id,
             winner_turn_id: winnerTurnID,
-            player_turn_id: gameConstants.PLAYER_1_TURN_ID
+            player_turn_id: gameConstants.PLAYER_1_TURN_ID,
+            board: cGame.board
           });
 
           cGame.player_2.socket.emit('finish', {
             game_id: cGame.id,
             winner_turn_id: winnerTurnID,
-            player_turn_id: gameConstants.PLAYER_2_TURN_ID
+            player_turn_id: gameConstants.PLAYER_2_TURN_ID,
+            board: cGame.board
           });
 
           // Emit that player list changed
@@ -349,6 +351,58 @@ function play(socket, data){
   }
 }
 
+function unstuckGame(socket, data){
+  var tournamentID = data.tournament_id,
+      gameID = data.game_id,
+      winnerTurnID = data.winner_turn_id;
+
+  // If the tournament is created
+  if(tournamentID in tournaments){
+
+    var tournament = tournaments[tournamentID];
+
+    // If the game is from the tournament
+    if(gameID in tournament.ongoingGames){
+
+      // Get the game
+      var game = tournament.ongoingGames[gameID];
+
+      // Check which player won and set game's winner and loser
+      if(winnerTurnID === gameConstants.PLAYER_1_TURN_ID){
+        game.winner = game.player_1;
+        game.loser = game.player_2;
+      }
+      else{
+        game.winner = game.player_2;
+        game.loser = game.player_1;
+      }
+
+      // Update wins and loses
+      game.winner.wins++;
+      game.loser.lloses++;
+
+      // Set game as finished
+      game.status = gameConstants.STATUS.finished;
+
+      // Notify game finished to the players
+      game.player_1.socket.emit('finish', {
+        game_id: game.id,
+        winner_turn_id: winnerTurnID,
+        player_turn_id: gameConstants.PLAYER_1_TURN_ID,
+        board: game.board
+      });
+
+      game.player_2.socket.emit('finish', {
+        game_id: game.id,
+        winner_turn_id: winnerTurnID,
+        player_turn_id: gameConstants.PLAYER_2_TURN_ID,
+        board: game.board
+      });
+
+    }
+  }
+}
+
 function attatchEvents(socket){
 
   // Listen to the signin event ------------------------------------------------
@@ -362,15 +416,8 @@ function attatchEvents(socket){
   });
 
   // Listen to the disconnect event --------------------------------------------
-  socket.on('disconnect', function () {
-
-    for(tournamentID in tournaments){
-
-    }
-
-    // TODO: handle properly the disconection of a user
-    // NOTE: ***THIS WON'T BE A TRIVIAL LOGIC***
-
+  socket.on('unstuck_game', function(data){
+    unstuckGame(socket, data);
   });
 
   // Listen to the play signal -------------------------------------------------
