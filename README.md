@@ -21,13 +21,10 @@ node ./bin/www --tid=12 --rrt=2 --game=othello
 - **rrt** (required): number of re-matches in a round robin fashion (normally 2).
 - **game** (required): game identifier, currently only supports "othello".
 
-## Tests
-
-Describe and show how to run the tests with code examples.
 
 ## Contributors
 
-Just me: @samuelchvez
+[@samuelchvez](https://github.com/samuelchvez)
 
 ## License
 
