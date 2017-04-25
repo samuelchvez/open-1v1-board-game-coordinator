@@ -122,6 +122,13 @@ socket.on('ready', function(data){
 });
 ```
 
+#### Play params
+- **tournament_id**: int, positive integer to the League you are connecting with.
+- **player_turn_id**: int, 1 for player 1, 2 for player 2, but you can simply echo what you received from the ready signal.
+- **game_id**: int, integer representing the id of the game playing.
+- **movement**: ?, any type representing the movement of the specific game you are playing. For instance, othello only needs an integer representing the tile clicked. 
+
+
 ### Player ready (emit player_ready)
 
 After the finish signal is received, you should reset your availability for your player. This enables the coordinator to match you agains other player. For example:
@@ -133,22 +140,15 @@ socket.on('finish', function(data){
   var winnerTurnID = data.winner_turn_id;
   var board = data.board;
   
-  // TODO: Your logic / user input here
+  // TODO: Your cleaning board logic here
   
-  socket.emit('play', {
+  socket.emit('player_ready', {
     tournament_id: tournamentID,
     player_turn_id: playerTurnID,
     game_id: gameID
   });
 });
 ```
-
-#### Play params
-- **tournament_id**: int, positive integer to the League you are connecting with.
-- **player_turn_id**: int, 1 for player 1, 2 for player 2, but you can simply echo what you received from the ready signal.
-- **game_id**: int, integer representing the id of the game playing.
-- **movement**: ?, any type representing the movement of the specific game you are playing. For instance, othello only needs an integer representing the tile clicked. 
-
 
 ## Contributors
 
