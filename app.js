@@ -3,6 +3,6 @@ var express = require('express');
 var app = express();
 
 // Server port
-app.set('port', process.env.PORT || 3000);
+app.set('port', 4000);
 
 module.exports = app;
