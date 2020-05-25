@@ -2,10 +2,11 @@
 var express = require('express'),
     app = require('../app'),
     sockets = require('../sockets'),
-    coordinator = require('../lib/coordinator');
+    coordinator = require('../lib/coordinator'),
+    argv = require('minimist')(process.argv.slice(2));
 
 // Server port
-app.set('port', 4000);
+app.set('port', argv.port);
 
 // Socket io
 var http = require('http').Server(app);
